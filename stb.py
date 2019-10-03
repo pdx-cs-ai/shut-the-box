@@ -31,19 +31,37 @@ def play(chooser):
     cur = set(range(1, 10))
     while cur:
         roll = random.randrange(1, 7) + random.randrange(1, 7)
-        print(sorted(list(cur)), roll)
+        # print(sorted(list(cur)), roll)
         moves = choices(cur, roll)
         if not moves:
             break
         move = chooser(cur, moves)
-        print("  ", sorted(list(move)))
+        # print("  ", sorted(list(move)))
         cur -= move
     score = calc_score(cur)
     result = sorted(list(cur))
-    print("*", score)
+    # print("*", score)
+    return score
 
 def choose_random(cur, moves):
     return random.choice(moves)
 
-play(choose_random)
+ngames = 10000
 
+wins = 0
+maxs = 0
+mins = 123456789
+tot = 0
+for _ in range(ngames):
+    score = play(choose_random)
+    if score == 0:
+        wins += 1
+    mins = min(mins, score)
+    maxs = max(maxs, score)
+    tot += score
+
+print("wins", wins)
+print("min", mins)
+print("max", maxs)
+print("mean", tot / ngames)
+    
