@@ -46,6 +46,16 @@ def play(chooser):
 def choose_random(cur, moves):
     return random.choice(moves)
 
+def choose_heur(cur, moves):
+    assert len(moves) > 0
+    lens = {len(m) for m in moves}
+    minl = min(lens)
+    shortmoves = [m for m in moves if len(m) == minl]
+    maxs = {max(m) for m in shortmoves}
+    maxx = max(maxs)
+    shortbigmoves = [m for m in shortmoves if maxx in m]
+    return random.choice(shortbigmoves)
+
 ngames = 10000
 
 wins = 0
@@ -53,7 +63,7 @@ maxs = 0
 mins = 123456789
 tot = 0
 for _ in range(ngames):
-    score = play(choose_random)
+    score = play(choose_heur)
     if score == 0:
         wins += 1
     mins = min(mins, score)
