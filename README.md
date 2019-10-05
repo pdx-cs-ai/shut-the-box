@@ -10,7 +10,7 @@ To see the command-line options, say
 
         python3 stb.py -h
 
-To run unit tests on the `choice()` function, say
+To run unit tests on the `choices()` function, say
 
-        python3 choice.py
+        python3 choices.py
 
