@@ -8,6 +8,7 @@
 
 import random
 import argparse
+from math import floor, log10
 
 from choices import *
 
@@ -78,9 +79,12 @@ choosers = {
 parser.add_argument('--chooser', '-c',
                     type=str, choices=choosers.keys(),
                     default="heur", help='chooser for moves')
+parser.add_argument('--graph', '-g',
+                    action="store_true", help='show histogram')
 args = parser.parse_args()
 ngames = args.ngames
 chooser = choosers[args.chooser]
+show_hist = args.graph
 
 # Set up stats.
 wins = 0
@@ -88,6 +92,8 @@ maxs = 0
 # XXX The minimum can never be larger than this.
 mins = 123456789
 tot = 0
+nbins = 20
+hist = [0] * nbins
 
 # Play many games and maintain the stats.
 for _ in range(ngames):
@@ -97,6 +103,8 @@ for _ in range(ngames):
     mins = min(mins, score)
     maxs = max(maxs, score)
     tot += score
+    bin = floor(nbins * log10(score + 1) / 9)
+    hist[bin] += 1
 
 # Display the stats.
 print("wins", wins)
@@ -104,3 +112,9 @@ print("min", mins)
 print("max", maxs)
 print("mean", tot / ngames)
     
+# Display the histogram.
+if show_hist:
+    for b in range(1, len(hist)):
+        i = 10.0 ** ((b - 1) / nbins)
+        n = 10 * hist[b] * nbins // ngames
+        print("{:3.2f} {}".format(i, '*' * n))
