@@ -104,19 +104,36 @@ if __name__ == '__main__':
 
     class TestsDieProb(unittest.TestCase):
 
+        def __init__(self, arg):
+            super().__init__(arg)
+            self.ps = roll_probs()
+
         # Probability of 7.
         def test_seven(self):
-            ps = roll_probs()
-            self.assertTrue(abs(ps[7] - 1/6) < 0.001)
+            self.assertTrue(abs(self.ps[7] - 1/6) < 0.001)
 
         # Probability of 2.
         def test_two(self):
-            ps = roll_probs()
-            self.assertTrue(abs(ps[2] - 1/36) < 0.001)
+            self.assertTrue(abs(self.ps[2] - 1/36) < 0.001)
 
         # Probability of 12.
         def test_two(self):
-            ps = roll_probs()
-            self.assertTrue(abs(ps[12] - 1/36) < 0.001)
+            self.assertTrue(abs(self.ps[12] - 1/36) < 0.001)
+
+    class TestsSolution(unittest.TestCase):
+
+        def __init__(self, arg):
+            super().__init__(arg)
+            self.ps = roll_probs()
+            self.ev = solution()
+
+        def test_empty(self):
+            self.assertTrue(self.ev[frozenset()] == 0)
+
+        def test_digits(self):
+            for i in range(1, 10):
+                found = self.ev[frozenset({i})]
+                calc = i * (1 - self.ps[i])
+                self.assertTrue(abs(found - calc) < 0.001)
 
     unittest.main()

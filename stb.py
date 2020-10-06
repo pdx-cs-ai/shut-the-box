@@ -83,7 +83,7 @@ args = parser.parse_args()
 ngames = args.ngames
 chooser = choosers[args.chooser]
 if args.chooser == "perfect":
-    print("solving")
+    print("solving...", end="")
     ev = solution()
     print("done")
 show_hist = args.graph
@@ -112,11 +112,18 @@ for _ in range(ngames):
 print("wins", wins)
 print("min", mins)
 print("max", maxs)
-print("mean", tot / ngames)
+print("mean", round(tot / ngames))
     
 # Display the histogram.
 if show_hist:
-    for b in range(1, len(hist)):
-        i = 10.0 ** ((b - 1) / nbins)
-        n = 10 * hist[b] * nbins // ngames
-        print("{:3.2f} {}".format(i, '*' * n))
+
+    def stars(b):
+        return 10 * hist[b] * nbins // ngames
+
+    maxbin = len(hist)
+    while maxbin > 1 and stars(maxbin - 1) == 0:
+        maxbin -= 1
+    for b in range(1, maxbin):
+        i = round(10.0 ** (9 * (b - 1) / nbins))
+        n = stars(b)
+        print("{:11d} {}".format(i, '*' * n))
