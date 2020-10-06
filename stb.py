@@ -62,7 +62,7 @@ def choose_heur(cur, moves):
 # value of the resulting position.
 ev = None
 def choose_perfect(cur, moves):
-    return min(moves, key=lambda m: ev[frozenset(m)])
+    return min(moves, key=lambda m: ev[frozenset(cur - m)])
 
 # Process arguments.
 parser = argparse.ArgumentParser(description='Play Shut The Box.')
