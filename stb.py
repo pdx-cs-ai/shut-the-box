@@ -83,9 +83,8 @@ args = parser.parse_args()
 ngames = args.ngames
 chooser = choosers[args.chooser]
 if args.chooser == "perfect":
-    print("solving...", end="")
     ev = solution()
-    print("done")
+    print("game expected value =", ev[frozenset(range(1,10))])
 show_hist = args.graph
 
 # Set up stats.
