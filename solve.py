@@ -4,7 +4,7 @@
 
 import collections
 
-import choices
+from choices import calc_score, choices
 
 # Compute the powerset of box states.
 def box_states():
@@ -42,6 +42,38 @@ def roll_probs():
     for r in probs:
         probs[r] /= count
     return probs
+
+# Compute solution table. Strategy: dynamic-programming
+# to get a bottom-up solution, AKA retrograde analysis.
+#
+# * There are no choices for a shut box.
+# * There is only one way to shut a single-digit box.
+# * For the ways to shut two-digit boxes, use the
+#   single-digit and zero-digit answers.
+# * Etcetera.
+def solution():
+    probs = roll_probs()
+    value = dict()
+
+    # Expected value of roll in state.
+    def ev_roll(state, roll):
+        best_score = calc_score(state)
+        for choice in choices(state, roll):
+            child = state - choice
+            assert child in value
+            child_score = value[child]
+            if child_score < best_score:
+                best_score = child_score
+        return best_score
+
+    # Find the expected value of each state.
+    for state in sorted(list(box_states()), key=lambda v: len(v)):
+        ev = 0
+        for roll in probs:
+            ev += probs[roll] * ev_roll(state, roll)
+        value[state] = ev
+
+    return value
 
 # Unit tests.
 if __name__ == '__main__':

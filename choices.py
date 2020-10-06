@@ -43,6 +43,18 @@ def canon_choices(choices, reverse=False):
         reverse=reverse
     )
 
+# Find the digital score for the current digits.
+# XXX This doesn't really belong here, but it was
+# convenient.
+def calc_score(cur):
+    # Put the digits in order.
+    digits = sorted(list(cur))
+    # Do a running sum.
+    t = 0
+    for d in digits:
+        t = t * 10 + d
+    return t
+
 # Unit tests.
 if __name__ == '__main__':
 

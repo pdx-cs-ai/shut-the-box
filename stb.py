@@ -11,16 +11,7 @@ import argparse
 from math import floor, log10
 
 from choices import *
-
-# Find the digital score for the current digits.
-def calc_score(cur):
-    # Put the digits in order.
-    digits = sorted(list(cur))
-    # Do a running sum.
-    t = 0
-    for d in digits:
-        t = t * 10 + d
-    return t
+from solve import solution
 
 # Play out a game using the given chooser function at each
 # step.  Return the game score. A chooser function takes the
@@ -67,6 +58,12 @@ def choose_heur(cur, moves):
     cmoves = canon_choices(shortmoves, reverse=True)
     return set(cmoves[0])
 
+# Pick a choice which minimizes the expected
+# value of the resulting position.
+ev = None
+def choose_perfect(cur, moves):
+    return min(moves, key=lambda m: ev[frozenset(m)])
+
 # Process arguments.
 parser = argparse.ArgumentParser(description='Play Shut The Box.')
 parser.add_argument('--ngames', '-n', type=int,
@@ -74,6 +71,7 @@ parser.add_argument('--ngames', '-n', type=int,
 choosers = {
     "heur" : choose_heur,
     "random" : choose_random,
+    "perfect" : choose_perfect,
 }
 # https://stackoverflow.com/a/27529806
 parser.add_argument('--chooser', '-c',
@@ -84,6 +82,10 @@ parser.add_argument('--graph', '-g',
 args = parser.parse_args()
 ngames = args.ngames
 chooser = choosers[args.chooser]
+if args.chooser == "perfect":
+    print("solving")
+    ev = solution()
+    print("done")
 show_hist = args.graph
 
 # Set up stats.
